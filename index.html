@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerald Stock Exchange</title>
+    <link rel="icon" href="ESElogoIcon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===============================
+           CSS VARIABLES (Easy Customization)
+           =============================== */
+        :root {
+            --primary: #10b981;       /* Main brand color (Emerald Green) */
+            --primary-dark: #0da271;
+            --dark: #1f2937;          /* Dark gray for text */
+            --light: #f9fafb;         /* Light gray for backgrounds */
+            --white: #ffffff;
+            --gray: #9ca3af;
+            --max-width: 1200px;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        /* ===============================
+           GLOBAL RESET & BASE STYLES
+           =============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--white);
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ===============================
+           REUSABLE UTILITY CLASSES
+           =============================== */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.85rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .section {
+            padding: 5rem 0;
+        }
+
+        /* ===============================
+           HEADER & NAVIGATION (Fixed Top Bar)
+           =============================== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+        /* Replace or override the old .logo text style */
+        .logo-link {
+            display: flex; /* Helps with alignment */
+            align-items: center;
+            text-decoration: none; /* Removes underline from link */
+        }
+        .logo-img {
+            height: 40px; /* Control the logo's size here. Adjust as needed */
+            width: auto; /* Keeps the image proportions */
+            /* Optional: Add a hover effect */
+            transition: transform 0.3s ease;
+        }
+        .logo-img:hover {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+        }
+        /* Specifically style the button in the navigation */
+        .header-container .btn {
+            padding: 0.6rem 1.5rem; /* Slightly less padding than the big hero buttons */
+            font-size: 0.95rem;
+            margin-left: 1rem; /* Adds a little space from the last nav link */
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* ===============================
+           HERO SECTION (Big Impactful Words)
+           =============================== */
+        .hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            padding: 10rem 0 9rem;
+            margin-top: 70px; /* Offset for fixed header */
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 auto;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+            text-align: center;
+            color: var(--dark);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        /* Layout: Places text and animation side by side */
+        .hero-container {
+            display: flex; /* Activates Flexbox */
+            align-items: center; /* Vertically centers items */
+            justify-content: space-between; /* Puts space between text and coin */
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            flex: 1; /* Allows the text block to grow and take up space */
+            max-width: 600px; /* Optional: prevents text from getting too wide */
+        }
+
+        .hero-animation {
+            flex-shrink: 0; /* Prevents the animation container from shrinking */
+            margin-left: 40px; /* Adds space between the text and the coin */
+        }
+
+        /* The floating animation */
+        .floating-coin {
+            width: 200px; /* Adjust the size as needed */
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ===============================
+           FEATURES SECTION (Scrollable Content Grid)
+           =============================== */
+        .features {
+            background-color: var(--white);
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+        .feature-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===============================
+           FOOTER (Closing Bar with Details)
+           =============================== */
+        .site-footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 4rem 0 2rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+        .footer-about p {
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+        }
+        .footer-links h4,
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+        .footer-links ul {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        .footer-contact p {
+            margin-bottom: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* ===============================
+           RESPONSIVE DESIGN (Mobile-First)
+           =============================== */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 1.5rem;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===============================
+         HEADER: Fixed Navigation Bar
+         =============================== -->
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="#" class="logo-link">
+                <img src="EmeraldStockExhangeName.png" alt="Emerald Stock Exchange Logo" class="logo-img">
+            </a>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="https://emeraldStockExchange.static.domains/">Home</a></li>
+                    <li><a href="#features">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="btn">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===============================
+         MAIN CONTENT
+         =============================== -->
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero section" id="home">
+            <div class="container hero-container"> <!-- Added a new container -->
+                <div class="container">
+                    <h1>The Investment System Made For Education</h1>
+                    <p>Emerald Stock Exchange provides a free, simple, and rewarding platform for students of all ages. Built on cooperation, driven by innovation.</p>
+                    <div class="hero-btns">
+                        <a href="#" class="btn">For Teachers</a>
+                        <a href="/balance" class="btn btn-secondary">Student Portal</a>
+                    </div>
+                </div>
+                <!-- The floating coin goes here, on the same level -->
+                <div class="hero-animation">
+                    <img src="ESElogo.png" alt="Floating Crypto Coin" class="floating-coin">
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section class="features section" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Why Choose Emerald?</h2>
+                    <p>We combine virtual investment gains with real world school coins deliver an unmatched learning experience for students.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <h3>Accessibility For All</h3>
+                        <p>Enjoy all of our services completely free of charge, without any limits on usage.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-feather"></i>
+                        </div>
+                        <h3>Simple Applications</h3>
+                        <p>Experience easy-to-use interfaces built with consumers in mind, no tricks, no traps, no strings attached.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <h3>Real Rewards</h3>
+                        <p>Keep students engaged in learning with real rewards from virtual gains.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADD MORE SECTIONS HERE (e.g., About, Contact) -->
+        <!-- You can duplicate the structure above to create new sections. -->
+
+    </main>
+
+    <!-- ===============================
+         FOOTER: Closing Bar with Details
+         =============================== -->
+    <footer class="site-footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Emerald Stock Exchange</div>
+                    <p>Encouraging the next generation of investors with accessibility, simplicity, and innovation at our core.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Services</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 3600 Central Parkway, Dublin, CA</p>
+                    <p><i class="fas fa-envelope"></i> null@null.null</p>
+                    <p><i class="fas fa-phone"></i> +0 (000) 000-0000</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Emerald Stock Exchange. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===============================
+         JAVASCRIPT FOR INTERACTIVITY
+         =============================== -->
+    <script>
+        // ⚠️ REPLACE THIS URL WITH YOUR ACTUAL DEPLOYED APPS SCRIPT URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycby5Zatwi2ko_KmQ0YkzNMNFlruoJ6IjKxUDZE70_r0eKF5Ok72enwuVuaXWL39Q-v6iPg/exec';
+
+        function fetchBalance() {
+            const studentId = document.getElementById('balanceStudentId').value.trim();
+            const resultDiv = document.getElementById('balanceResult');
+
+            // Clear previous result and show loading
+            resultDiv.innerHTML = '<p>Checking balance...</p>';
+            resultDiv.style.color = 'inherit';
+
+            if (!studentId) {
+                resultDiv.innerHTML = '<p style="color: var(--primary);">Please enter a Student ID.</p>';
+                return;
+            }
+
+            // Create a new script tag for the JSONP request
+            const script = document.createElement('script');
+            // Build the URL with BOTH parameters
+            script.src = API_URL + '?studentId=' + encodeURIComponent(studentId) + '&callback=handleBalanceResponse';
+            // Append to the page to make the request
+            document.head.appendChild(script);
+        }
+
+        // This function MUST be globally available to handle the JSONP response
+        function handleBalanceResponse(data) {
+            const resultDiv = document.getElementById('balanceResult');
+
+            if (data.error) {
+                // If your API returns an error object (like when ID is not found)
+                resultDiv.innerHTML = `<p><strong>Error:</strong> ${data.message}</p>`;
+                resultDiv.style.color = '#dc2626'; // A red color
+            } else {
+                // Successful response
+                resultDiv.innerHTML = `
+                    <p><strong>Student ID:</strong> ${data.studentId}</p>
+                    <p><strong>Current Balance:</strong> <span style="color: var(--primary); font-weight: bold;">${data.currentBalance} Care Coins</span></p>
+                `;
+                resultDiv.style.color = 'inherit';
+            }
+        }
+    </script>
+</body>
+</html>
