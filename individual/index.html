@@ -722,7 +722,7 @@
         
         try {
             // Send this token to YOUR NEW BACKEND ENDPOINT
-            const authResponse = await fetch('YOUR_APPS_SCRIPT_DO_POST_URL', {
+            const authResponse = await fetch('https://script.google.com/macros/s/AKfycbwQgRN3FBc6qrjSrYzYu6ApDXT62wwSR3l26M9agJDCs2_LI9WiyH8W1mDaAJEncLVsDw/exec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ credential: idToken })
