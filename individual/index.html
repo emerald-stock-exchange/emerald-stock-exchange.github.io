@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Use | Emerald Educational Platform</title>
+    <link rel="icon" href="ESElogoIcon.png" type="image/png">
+    <!-- Using the same Font Awesome for consistency -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        /* ===============================
+           CSS VARIABLES (Same as Main Site)
+           =============================== */
+        :root {
+            --primary: #10b981;       /* Emerald Green */
+            --primary-dark: #0da271;
+            --dark: #1f2937;          /* Dark gray for text */
+            --light: #f9fafb;         /* Light gray for backgrounds */
+            --white: #ffffff;
+            --gray: #9ca3af;
+            --darker: #111827;        /* NEW: Very dark for login section */
+            --max-width: 1200px;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* ===============================
+           GLOBAL RESET & BASE STYLES
+           =============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            
+        }
+        .section {
+            padding: 5rem 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.85rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        /* ===============================
+           HEADER & NAVIGATION (Fixed Top Bar)
+           =============================== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+        /* Replace or override the old .logo text style */
+        .logo-link {
+            display: flex; /* Helps with alignment */
+            align-items: center;
+            text-decoration: none; /* Removes underline from link */
+        }
+        .logo-img {
+            height: 40px; /* Control the logo's size here. Adjust as needed */
+            width: auto; /* Keeps the image proportions */
+            /* Optional: Add a hover effect */
+            transition: transform 0.3s ease;
+        }
+        .logo-img:hover {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+        }
+        /* Specifically style the button in the navigation */
+        .header-container .btn {
+            padding: 0.6rem 1.5rem; /* Slightly less padding than the big hero buttons */
+            font-size: 0.95rem;
+            margin-left: 1rem; /* Adds a little space from the last nav link */
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* ===============================
+           BALANCE CHECK SECTION (Hero Style)
+           =============================== */
+        .balance-hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            padding: 10rem 0 9rem;
+            margin-top: 70px; /* Offset for fixed header */
+            text-align: center;
+        }
+        .balance-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 auto;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+            text-align: center;
+            color: var(--dark);
+        }
+        .balance-hero p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+        .balance-hero-container {
+            display: flex; /* Activates Flexbox */
+            align-items: center; /* Vertically centers items */
+            justify-content: space-between; /* Puts space between text and coin */
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        /* ===============================
+           LOGIN SECTION (Darker Background)
+           =============================== */
+        .login-section {
+            background-color: var(--darker);
+            color: var(--light);
+            padding: 7rem 0;
+        }
+        .login-container {
+            max-width: 450px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .login-container h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+        .login-container > p {
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+        }
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        /* Separate rule for the Google button container */
+        #g_id_onload {
+            min-height: 44px !important;
+            width: 100% !important;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.07);
+            color: var(--white);
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .login-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .login-hint {
+            margin-top: 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* ===============================
+           QUICK LINKS SECTION
+           =============================== */
+        .quick-links {
+            background-color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        .quick-links h3 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .link-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        .link-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .link-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===============================
+           FOOTER (Same as Main Site)
+           =============================== */
+        .site-footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 3rem 0 1.5rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* ===============================
+           RESPONSIVE DESIGN
+           =============================== */
+        @media (max-width: 768px) {
+            .balance-hero h1 {
+                font-size: 2.2rem;
+            }
+            .balance-form {
+                flex-direction: column;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .login-options {
+                flex-direction: column;
+            }
+            .login-form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+    <script src="../assets/js/config.js"></script>
+    <!-- Add this inside the <head> tags, after your other scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="/" class="logo-link">
+                <img src="EmeraldStockExhangeName.png" alt="Emerald Educational Platform Logo" class="logo-img">
+            </a>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#features">How It Works</a></li>
+                    <li><a href="#login" class="btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- BALANCE CHECK HERO -->
+     <section class="balance-hero section">
+        <div class="container" style="display: flex; gap: 0px;">
+            <!-- Balance form next to it -->
+            <div style="flex: 1;">  
+                <h1>Simulating Investing Made Easy</h1>
+                <p>Enter your Student ID to see your current balance instantly. Ready to invest? Sign in below to access your investment dashboard.</p>
+                <div class="hero-btns">
+                    <a href="#" class="btn">Get Started</a>
+                </div>
+            </div>
+            <img src="../assets/marketanimation.webp" alt="Educational Tokens Illustration" style="width: 300px;">
+        </div>
+    </section>
+
+    <!-- LOGIN SECTION (Darker Background) -->
+    <section class="login-section section" id="login">
+        <div class="container login-container">
+            <h2>Ready to Invest?</h2>
+            <p>Sign in to your account to start growing your portfolio</p>
+            <div class="login-form">
+                <div id="g_id_onload"></div> <!-- Button will be rendered here -->
+                <p class="login-hint">
+                    <i class="fas fa-info-circle"></i> You must use your school Google account.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="quick-links section">
+        <div class="container">
+            <h3>Quick Access</h3>
+            <div class="links-grid">
+                <a href="/" class="link-card">
+                    <i class="fas fa-home"></i>
+                    <h4>Home</h4>
+                    <p>Back to main Emerald Educational Platform homepage</p>
+                </a>
+                <a href="#features" class="link-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>How It Works</h4>
+                    <p>Learn about investing on our platform</p>
+                </a>
+                <a href="#about" class="link-card">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>About the Program</h4>
+                    <p>Educational goals and benefits</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Emerald Educational Platform</div>
+                    <p>Teaching financial literacy through hands-on investment simulation.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Student Resources</h4>
+                    <ul>
+                        <li><a href="/balance">Check Balance</a></li>
+                        <li><a href="#">Investment Guide</a></li>
+                        <li><a href="#">Market Simulator</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Support</h4>
+                    <p><i class="fas fa-envelope"></i> contact@emeraldedu.org (currently unavaliable)</p>
+                    <p><i class="fas fa-phone"></i> School IT Extension: 5555 (currently unavaliable)</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Emerald Educational Platform. Educational Simulation Project. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ====================
+        // BALANCE CHECK LOGIC
+        // ====================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwQgRN3FBc6qrjSrYzYu6ApDXT62wwSR3l26M9agJDCs2_LI9WiyH8W1mDaAJEncLVsDw/exec';
+
+        function fetchBalance() {
+            const studentId = document.getElementById('balanceStudentId').value.trim();
+            const resultDiv = document.getElementById('balanceResult');
+
+            // Clear and show loading
+            resultDiv.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Checking balance...</p>';
+            resultDiv.style.color = 'inherit';
+
+            if (!studentId || !/^\d{5,6}$/.test(studentId)) {
+                resultDiv.innerHTML = '<p style="color: #ef4444;">Please enter a valid 5-6 digit Student ID.</p>';
+                return;
+            }
+
+            // JSONP request for cross-domain compatibility
+            const script = document.createElement('script');
+            script.src = `${API_URL}?studentId=${encodeURIComponent(studentId)}&callback=handleBalanceResponse`;
+            document.head.appendChild(script);
+        }
+
+        function handleBalanceResponse(data) {
+            const resultDiv = document.getElementById('balanceResult');
+            
+            if (data.error) {
+                resultDiv.innerHTML = `<p style="color: #ef4444;"><strong>Error:</strong> ${data.message}</p>`;
+            } else {
+                resultDiv.innerHTML = `
+                    <p><strong>Student ID:</strong> ${data.studentId}</p>
+                    <p><strong>Current Balance:</strong> 
+                        <span style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">
+                            ${data.currentBalance} Emeralds
+                        </span>
+                    </p>
+                    <p style="margin-top: 0.5rem; color: var(--gray); font-size: 0.9rem;">
+                        <i class="fas fa-lightbulb"></i> Ready to invest? Sign in below!
+                    </p>
+                `;
+            }
+        }
+
+        // ====================
+        // MOBILE MENU TOGGLE
+        // ====================
+        document.getElementById('menuBtn')?.addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // ====================
+        // PLACEHOLDER LOGIN
+        // ====================
+        document.querySelector('.login-form .btn')?.addEventListener('click', function() {
+            const email = document.getElementById('studentEmail').value;
+            const password = document.getElementById('studentPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in both email and password fields.');
+                return;
+            }
+            
+            // Placeholder for actual login logic
+            console.log('Login attempt:', { email, password });
+            alert('Login functionality will be implemented in the next phase.');
+        });
+    </script>
+    <script>
+        // This script runs after config.js is loaded
+        window.onload = function () {
+            // Configure the Google Sign-In button
+            google.accounts.id.initialize({
+                client_id: '739471109344-5ebditnjrtk83sqpr0e28bsu90vjps4t.apps.googleusercontent.com', // SAME AS BEFORE
+                login_uri: 'https://script.google.com/macros/s/AKfycbwQgRN3FBc6qrjSrYzYu6ApDXT62wwSR3l26M9agJDCs2_LI9WiyH8W1mDaAJEncLVsDw/exec',
+                callback: handleIndividualSignIn, // NEW HANDLER FUNCTION
+                auto_prompt: false
+            });
+            // Render the button into the 'g_id_onload' div
+            google.accounts.id.renderButton(
+                document.getElementById('g_id_onload'),
+                {
+                    type: 'standard',
+                    size: 'large',
+                    theme: 'filled_blue',
+                    text: 'signin_with',
+                    shape: 'pill',
+                    logo_alignment: 'left',
+                    width: '300'
+                }
+            );
+        };
+    </script>
+    <!-- Add this after Google Sign-In script but before your existing JS -->
+    <script>
+    // ==================== SESSION MANAGER CLASS ====================
+    class SessionManager {
+    constructor() {
+        this.sessionToken = null;
+        this.userData = null;
+        this.checkInterval = null;
+    }
+    
+    setSessionFromResponse(response) {
+        if (response.session?.token) {
+        this.sessionToken = response.session.token;
+        this.userData = response.user;
+        
+        // Store in localStorage (encrypted)
+        localStorage.setItem('emerald_user', btoa(JSON.stringify(response.user)));
+        
+        // Start session monitoring
+        this.startSessionMonitoring();
+        this.updateUI();
+        
+        return true;
+        }
+        return false;
+    }
+    
+    async checkSession() {
+        if (!this.sessionToken) return false;
+        
+        try {
+        const response = await fetch(
+            `${APPS_SCRIPT_WEB_APP_URL}/session`,
+            {
+            headers: {
+                'Authorization': `Bearer ${this.sessionToken}`
+            }
+            }
+        );
+        
+        const data = await response.json();
+        return data.valid;
+        } catch {
+        return false;
+        }
+    }
+    
+    async logout() {
+        if (this.sessionToken) {
+        try {
+            await fetch(`${APPS_SCRIPT_WEB_APP_URL}/logout`, {
+            headers: {
+                'Authorization': `Bearer ${this.sessionToken}`
+            }
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+        }
+        
+        this.clearSession();
+        window.location.href = '/balance';
+    }
+    
+    clearSession() {
+        this.sessionToken = null;
+        this.userData = null;
+        localStorage.removeItem('emerald_user');
+        
+        if (this.checkInterval) {
+        clearInterval(this.checkInterval);
+        this.checkInterval = null;
+        }
+        
+        this.updateUI();
+    }
+    
+    startSessionMonitoring() {
+        this.checkInterval = setInterval(async () => {
+        const valid = await this.checkSession();
+        if (!valid) {
+            this.clearSession();
+            alert('Session expired. Please login again.');
+        }
+        }, 300000); // Check every 5 minutes
+    }
+    
+    updateUI() {
+        const loginSection = document.querySelector('.login-section');
+        if (!loginSection) return;
+        
+        if (this.userData) {
+        // User is logged in
+        loginSection.innerHTML = `
+            <div class="login-container">
+            <h2>Welcome, ${this.userData.name}!</h2>
+            <p>Student ID: ${this.userData.studentId}</p>
+            <div style="margin-top: 2rem;">
+                <button onclick="window.location.href='#'" class="btn">
+                Go to Dashboard
+                </button>
+                <button onclick="window.sessionManager.logout()" class="btn btn-secondary">
+                Logout
+                <button onclick="window.location.href='#'" class="btn">
+                Go to Dashboard
+                </button>
+                <button onclick="window.sessionManager.logout()" class="btn btn-secondary">
+                Logout
+                </button>
+            </div>
+            </div>
+        `;
+        } else {
+        // User is not logged in - show Google button
+        loginSection.innerHTML = `
+            <div class="login-container">
+            <h2>Ready to Invest?</h2>
+            <p>Sign in to your account to start growing your portfolio</p>
+            <div class="login-form">
+                <div id="g_id_onload"></div>
+                <p class="login-hint">
+                <i class="fas fa-info-circle"></i> Use your school Google account.
+                </p>
+            </div>
+            </div>
+        `;
+        
+        // Re-initialize Google button
+        if (window.google?.accounts?.id) {
+            google.accounts.id.renderButton(
+            document.getElementById('g_id_onload'),
+            {
+                type: 'standard',
+                size: 'large',
+                theme: 'filled_blue',
+                text: 'signin_with',
+                shape: 'pill'
+            }
+            );
+        }
+        }
+    }
+    }
+
+    // ==================== GOOGLE SIGN-IN HANDLER ====================
+    async function handleIndividualSignIn(response) {
+        const idToken = response.credential;
+        
+        try {
+            // Send this token to YOUR NEW BACKEND ENDPOINT
+            const authResponse = await fetch('YOUR_APPS_SCRIPT_DO_POST_URL', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: idToken })
+            });
+            
+            const result = await authResponse.json();
+            
+            if (result.success) {
+            // Store user session and redirect to dashboard
+            console.log('Individual user logged in:', result.user);
+            window.location.href = '/individual-dashboard.html'; // Create this next!
+            } else {
+            alert('Login failed: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Could not connect to server.');
+        }
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
+    function showNotification(message, type = 'info') {
+    // Simple notification implementation
+    alert(`${type.toUpperCase()}: ${message}`);
+    }
+
+    // ==================== INITIALIZE ON LOAD ====================
+    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize session manager
+    window.sessionManager = new SessionManager();
+    
+    // Check for existing session
+    const storedUser = localStorage.getItem('emerald_user');
+    if (storedUser) {
+        try {
+        window.sessionManager.userData = JSON.parse(atob(storedUser));
+        } catch {
+        localStorage.removeItem('emerald_user');
+        }
+    }
+    
+    // Update UI based on login state
+    window.sessionManager.updateUI();
+    });
+
+    // ==================== UPDATE GOOGLE INITIALIZATION ====================
+    // Replace your existing Google init code with:
+    window.onload = function() {
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleSignIn,
+        auto_prompt: false
+    });
+    
+    // Only render button if user is not logged in
+    if (!window.sessionManager?.userData) {
+        google.accounts.id.renderButton(
+        document.getElementById('g_id_onload'),
+        {
+            type: 'standard',
+            size: 'large',
+            theme: 'filled_blue',
+            text: 'signin_with',
+            shape: 'pill'
+        }
+        );
+    }
+    };
+    </script>
+</body>
+</html>
