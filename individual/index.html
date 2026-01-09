@@ -365,10 +365,6 @@
             }
         }
     </style>
-    <script
-      src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js"
-      type="module"
-    ></script>
     <script src="../assets/js/config.js"></script>
     <!-- Add this inside the <head> tags, after your other scripts -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -394,7 +390,7 @@
         </div>
     </header>
 
-    <!-- BALANCE CHECK HERO -->
+    <!--  HERO -->
      <section class="balance-hero section">
         <div class="container" style="display: flex; gap: 0px;">
             <!-- Balance form next to it -->
@@ -405,12 +401,7 @@
                     <a href="#" class="btn">Get Started</a>
                 </div>
             </div>
-            <dotlottie-wc
-              src="https://lottie.host/68514947-c6d4-472a-a1a7-dd98732699c4/5P7itPqVDz.lottie"
-              style="width: 300px;height: 300px"
-              autoplay
-              loop
-            ></dotlottie-wc>
+            <img src="../assets/marketanimation.webp" alt="Educational Tokens Illustration" style="width: 300px;">
         </div>
     </section>
 
@@ -422,7 +413,7 @@
             <div class="login-form">
                 <div id="g_id_onload"></div> <!-- Button will be rendered here -->
                 <p class="login-hint">
-                    <i class="fas fa-info-circle"></i> You must use your personal Google account.
+                    <i class="fas fa-info-circle"></i> You must not use your school Google account.
                 </p>
             </div>
         </div>
@@ -642,7 +633,7 @@
         }
         
         this.clearSession();
-        window.location.href = '/balance';
+        window.location.href = '/individual/index.html';
     }
     
     clearSession() {
@@ -677,14 +668,9 @@
         loginSection.innerHTML = `
             <div class="login-container">
             <h2>Welcome, ${this.userData.name}!</h2>
-            <p>Student ID: ${this.userData.studentId}</p>
+            <p>Student ID: ${this.userData.studentId || ''}</p>
             <div style="margin-top: 2rem;">
-                <button onclick="window.location.href='#'" class="btn">
-                Go to Dashboard
-                </button>
-                <button onclick="window.sessionManager.logout()" class="btn btn-secondary">
-                Logout
-                <button onclick="window.location.href='#'" class="btn">
+                <button onclick="window.location.href='/individual-dashboard.html'" class="btn">
                 Go to Dashboard
                 </button>
                 <button onclick="window.sessionManager.logout()" class="btn btn-secondary">
@@ -702,7 +688,7 @@
             <div class="login-form">
                 <div id="g_id_onload"></div>
                 <p class="login-hint">
-                <i class="fas fa-info-circle"></i> Use your personal Google account.
+                <i class="fas fa-info-circle"></i> Use your school Google account.
                 </p>
             </div>
             </div>
@@ -728,10 +714,9 @@
     // ==================== GOOGLE SIGN-IN HANDLER ====================
     async function handleIndividualSignIn(response) {
         const idToken = response.credential;
-        
         try {
-            // Send this token to YOUR NEW BACKEND ENDPOINT
-            const authResponse = await fetch('https://script.google.com/macros/s/AKfycbwQgRN3FBc6qrjSrYzYu6ApDXT62wwSR3l26M9agJDCs2_LI9WiyH8W1mDaAJEncLVsDw/exec', {
+            // Send this token to backend endpoint
+            const authResponse = await fetch(APPS_SCRIPT_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ credential: idToken })
@@ -739,13 +724,10 @@
             if (!authResponse.ok) {
                 throw new Error(`Server responded with status: ${authResponse.status}`);
             }
-
             const result = await authResponse.json();
-            
             if (result.success) {
-            // Store user session and redirect to dashboard
-            console.log('Individual user logged in:', result.user);
-            window.location.href = '/individual-dashboard.html'; // Create this next!
+            window.sessionManager.setSessionFromResponse(result);
+            window.location.href = '/individual-dashboard.html';
             } else {
             alert('Login failed: ' + result.message);
             }
@@ -755,18 +737,9 @@
         }
     }
 
-    // ==================== HELPER FUNCTIONS ====================
-    function showNotification(message, type = 'info') {
-    // Simple notification implementation
-    alert(`${type.toUpperCase()}: ${message}`);
-    }
-
     // ==================== INITIALIZE ON LOAD ====================
     window.addEventListener('DOMContentLoaded', () => {
-    // Initialize session manager
     window.sessionManager = new SessionManager();
-    
-    // Check for existing session
     const storedUser = localStorage.getItem('emerald_user');
     if (storedUser) {
         try {
@@ -775,8 +748,6 @@
         localStorage.removeItem('emerald_user');
         }
     }
-    
-    // Update UI based on login state
     window.sessionManager.updateUI();
     });
 
