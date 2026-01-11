@@ -7,7 +7,6 @@
     <link rel="icon" href="ESElogoIcon.png" type="image/png">
     <!-- Using the same Font Awesome for consistency -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
         /* ===============================
            CSS VARIABLES (Same as Main Site)
@@ -485,56 +484,56 @@
     </footer>
     <!-- Consolidated Supabase Auth Script -->
     <script>
-        // 1. Initialize Supabase Client (uses the global 'createClient' from the library)
+        // 1. INITIALIZE SUPABASE CLIENT (ONLY ONCE!)
+        // Make sure these URLs/keys are correct from your Supabase dashboard
         const supabaseUrl = 'https://nlcdgfpnreyjoomctoht.supabase.co';
         const supabaseAnonKey = 'sb_publishable_8OPX1CdBvxjjGkJbf5nRPA_oz0iSd_p';
-        const supabase = window.createClient ? window.createClient(supabaseUrl, supabaseAnonKey) : null;
+        
+        // This creates the global 'supabase' client
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+        
+        console.log('Supabase client initialized:', !!supabase);
 
-        if (!supabase) {
-            console.error('Supabase client failed to initialize. Check the library script.');
-        }
-
-        // 2. Function to handle Google login
-        async function signInWithGoogle() {
-            if (!supabase) return;
+        // 2. GOOGLE LOGIN FUNCTION (MUST BE GLOBAL FOR onclick)
+        window.signInWithGoogle = async function() {
+            console.log('signInWithGoogle called');
             
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    // Redirects back to this exact page after successful login
-                    redirectTo: window.location.href
+            try {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.href
+                    }
+                });
+                
+                if (error) {
+                    console.error('Login error:', error);
+                    alert('Login failed: ' + error.message);
+                } else {
+                    console.log('Redirecting to Google OAuth...');
                 }
-            });
-            
-            if (error) {
-                console.error('Supabase Login error:', error.message);
-                alert('Login failed: ' + error.message);
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                alert('An unexpected error occurred.');
             }
-            // If successful, the page will redirect automatically.
-        }
+        };
 
-        // 3. Function to check current auth state on page load
-        async function checkAuthState() {
-            if (!supabase) return;
-            
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                console.warn('Error checking session:', error.message);
-            }
-            
-            if (session) {
-                console.log('User is logged in:', session.user.email);
-                // User is logged in! Redirect to dashboard or update UI.
-                // For now, let's just log it. Uncomment the next line to redirect.
-                // window.location.href = '/individual-dashboard.html';
-            } else {
-                console.log('No active session.');
+        // 3. CHECK IF USER IS ALREADY LOGGED IN
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    console.log('Already logged in as:', session.user.email);
+                    // Optional: Redirect to dashboard immediately
+                    // window.location.href = '/individual-dashboard.html';
+                }
+            } catch (err) {
+                console.warn('Session check error:', err);
             }
         }
 
-        // 4. Run the auth check once the page is fully loaded
-        window.addEventListener('DOMContentLoaded', checkAuthState);
+        // 4. RUN CHECK WHEN PAGE LOADS
+        document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>
 </html>
