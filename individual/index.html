@@ -633,9 +633,7 @@
             });
             async function logout() {
                 if (!window.emeraldSupabase) return;
-                
-                if (!confirm('Are you sure you want to log out?')) return;
-                
+                                
                 try {
                     // 1. Sign out from Supabase (this clears the server session and local storage)
                     const { error } = await window.emeraldSupabase.auth.signOut();
@@ -655,9 +653,6 @@
                     alert('Logout failed: ' + error.message);
                 }
             }
-
-            // Make sure the function is globally available
-            window.logout = logout;
 
             // Make logout available globally
             window.logout = logout;
