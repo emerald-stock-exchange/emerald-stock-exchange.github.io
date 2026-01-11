@@ -369,7 +369,7 @@
         type="module"
     ></script>
     <!-- Add this inside the <head> tags, after your other scripts -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 </head>
 <body>
     <!-- HEADER -->
@@ -417,11 +417,9 @@
         <div class="container login-container">
             <h2>Ready to Invest?</h2>
             <p>Sign in to your account to start growing your portfolio</p>
-            <div class="login-form">
-                <button onclick="signInWithGoogle()" class="btn btn-individual">
-                    <i class="fab fa-google"></i> Sign in with Google
-                </button>
-            </div>
+            <button class="btn btn-individual">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
         </div>
     </section>
 
@@ -482,58 +480,287 @@
             </div>
         </div>
     </footer>
-    <!-- Consolidated Supabase Auth Script -->
+    <!-- Then replace your entire custom script block with this: -->
     <script>
-        // 1. INITIALIZE SUPABASE CLIENT (ONLY ONCE!)
-        // Make sure these URLs/keys are correct from your Supabase dashboard
-        const supabaseUrl = 'https://nlcdgfpnreyjoomctoht.supabase.co';
-        const supabaseAnonKey = 'sb_publishable_8OPX1CdBvxjjGkJbf5nRPA_oz0iSd_p';
-        
-        // This creates the global 'supabase' client
-        const supabase = createClient(supabaseUrl, supabaseAnonKey);
-        
-        console.log('Supabase client initialized:', !!supabase);
-
-        // 2. GOOGLE LOGIN FUNCTION (MUST BE GLOBAL FOR onclick)
-        window.signInWithGoogle = async function() {
-            console.log('signInWithGoogle called');
+        // 1. WAIT FOR WINDOW TO BE READY
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking for Supabase...');
+            
+            // 2. CHECK IF supabase GLOBAL EXISTS (from CDN)
+            if (typeof window.supabase === 'undefined') {
+                console.error('ERROR: Supabase library not loaded!');
+                alert('Cannot load authentication system. Please refresh or check connection.');
+                return;
+            }
+            
+            console.log('Supabase library found!');
+            
+            // 3. INITIALIZE CLIENT
+            const supabaseUrl = 'https://nlcdgfpnreyjoomctoht.supabase.co';
+            const supabaseAnonKey = 'sb_publishable_8OPX1CdBvxjjGkJbf5nRPA_oz0iSd_p';
             
             try {
-                const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: window.location.href
+                // Use window.supabase.createClient (the UMD bundle exports it this way)
+                window.emeraldSupabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+                console.log('Emerald Supabase client created successfully.');
+            } catch (err) {
+                console.error('Failed to create Supabase client:', err);
+                alert('Configuration error. Check your Supabase URL and key.');
+                return;
+            }
+            
+            // After creating window.emeraldSupabase, add this:
+            async function handleOAuthRedirect() {
+                // Check if we're returning from OAuth with a hash in the URL
+                const hash = window.location.hash;
+                
+                if (hash && hash.includes('access_token') || hash.includes('error')) {
+                    console.log('Detected OAuth redirect with hash:', hash.substring(0, 50) + '...');
+                    
+                    try {
+                        // Let Supabase parse the hash and establish the session
+                        const { data, error } = await window.emeraldSupabase.auth.getSessionFromUrl();
+                        
+                        if (error) throw error;
+                        
+                        console.log('OAuth redirect handled successfully!');
+                        
+                        // Clear the hash from the URL (cleaner browsing)
+                        window.location.hash = '';
+                        
+                        // Now check auth again
+                        checkAuthAndRedirect();
+                        
+                    } catch (error) {
+                        console.error('Failed to handle OAuth redirect:', error);
+                        alert('Authentication error: ' + error.message);
+                    }
+                }
+            }
+
+            // Then update your DOMContentLoaded event to also call this:
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded, checking auth state...');
+                
+                // First, handle any OAuth redirect
+                handleOAuthRedirect().then(() => {
+                    // Then check general auth state
+                    checkAuthAndRedirect();
+                });
+            });
+            // 4. SETUP LOGIN FUNCTION
+            window.signInWithGoogle = async function() {
+                console.log('Google login clicked');
+                
+                if (!window.emeraldSupabase) {
+                    alert('Authentication not ready.');
+                    return;
+                }
+                
+                try {
+                    const { error } = await window.emeraldSupabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            // CRITICAL: Use the exact page URL where OAuth should return
+                            redirectTo: 'https://emerald-education-platform.github.io/individual/'
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    console.log('OAuth flow started successfully');
+                    
+                } catch (error) {
+                    console.error('Google OAuth error:', error);
+                    alert('Login failed: ' + error.message);
+                }
+            };
+            
+            // 5. ATTACH TO BUTTON
+            const loginButton = document.querySelector('.btn-individual');
+            if (loginButton) {
+                loginButton.onclick = window.signInWithGoogle;
+                loginButton.style.cursor = 'pointer';
+                console.log('Login button activated.');
+            }
+            
+            // 6. CHECK EXISTING SESSION
+            checkAuthAndRedirect();
+            
+            // Replace your current checkAuth() function with this:
+            async function checkAuthAndRedirect() {
+                if (!window.emeraldSupabase) return;
+                
+                try {
+                    const { data: { session }, error } = await window.emeraldSupabase.auth.getSession();
+                    
+                    if (error) {
+                        console.warn('Session check error:', error.message);
+                        return;
+                    }
+                    
+                    if (session) {
+                        console.log('User is logged in:', session.user.email);
+                        
+                        // OPTION A: Redirect to a separate dashboard page
+                        // window.location.href = 'dashboard.html';
+                        
+                        // OPTION B: Transform THIS PAGE into a dashboard (see Step 2)
+                        transformToDashboard(session.user);
+                        
+                    } else {
+                        console.log('No active session - showing login UI');
+                        showLoginUI(); // Ensure login button is visible
+                    }
+                } catch (err) {
+                    console.error('Auth check failed:', err);
+                }
+            }
+
+            // Call this on page load AND after OAuth redirect
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded, checking auth state...');
+                // Check immediately
+                checkAuthAndRedirect();
+                
+                // Also check when page becomes visible (useful for OAuth redirect back)
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden) {
+                        console.log('Page became visible, re-checking auth...');
+                        checkAuthAndRedirect();
                     }
                 });
+            });
+            async function logout() {
+                if (!window.emeraldSupabase) return;
                 
-                if (error) {
-                    console.error('Login error:', error);
-                    alert('Login failed: ' + error.message);
-                } else {
-                    console.log('Redirecting to Google OAuth...');
+                if (!confirm('Are you sure you want to log out?')) return;
+                
+                try {
+                    // 1. Sign out from Supabase (this clears the server session and local storage)
+                    const { error } = await window.emeraldSupabase.auth.signOut();
+                    
+                    if (error) throw error;
+                    
+                    console.log('Supabase session terminated on server and client.');
+                    
+                    // 2. Clear any leftover local data (optional but thorough)
+                    localStorage.removeItem('emerald_user'); // Clear your custom storage if you used it
+                    
+                    // 3. Force a hard page reload to reset all client-side state
+                    window.location.href = window.location.href; // or window.location.reload(true);
+                    
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Logout failed: ' + error.message);
                 }
-            } catch (err) {
-                console.error('Unexpected error:', err);
-                alert('An unexpected error occurred.');
             }
-        };
 
-        // 3. CHECK IF USER IS ALREADY LOGGED IN
-        async function checkAuth() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    console.log('Already logged in as:', session.user.email);
-                    // Optional: Redirect to dashboard immediately
-                    // window.location.href = '/individual-dashboard.html';
+            // Make sure the function is globally available
+            window.logout = logout;
+
+            // Make logout available globally
+            window.logout = logout;
+            function transformToDashboard(user) {
+                console.log('Transforming page to dashboard for:', user.email);
+                
+                // 1. Update the main hero section
+                const heroSection = document.querySelector('.balance-hero');
+                if (heroSection) {
+                    heroSection.innerHTML = `
+                        <div class="container" style="text-align: center;">
+                            <h1>Welcome, ${user.email.split('@')[0]}!</h1>
+                            <p>Your Emerald Exchange Dashboard</p>
+                            <div style="margin-top: 2rem;">
+                                <div style="background: white; padding: 2rem; border-radius: 8px; display: inline-block;">
+                                    <h3 style="color: var(--gray); margin-bottom: 0.5rem;">Portfolio Value</h3>
+                                    <p style="font-size: 2.5rem; font-weight: bold; color: var(--primary);">1,250 Emeralds</p>
+                                </div>
+                            </div>
+                            <div class="hero-btns" style="margin-top: 2rem;">
+                                <button onclick="openMarket()" class="btn">Browse Market</button>
+                                <button onclick="viewPortfolio()" class="btn btn-secondary">My Portfolio</button>
+                            </div>
+                        </div>
+                    `;
                 }
-            } catch (err) {
-                console.warn('Session check error:', err);
+                
+                // 2. Update the login section to show user info
+                const loginSection = document.querySelector('.login-section');
+                if (loginSection) {
+                    loginSection.innerHTML = `
+                        <div class="container login-container">
+                            <h2>Account</h2>
+                            <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 8px;">
+                                <p><strong>Email:</strong> ${user.email}</p>
+                                <p><strong>Joined:</strong> ${new Date().toLocaleDateString()}</p>
+                                <div style="margin-top: 1.5rem;">
+                                    <button onclick="logout()" class="btn" style="background: #ef4444;">
+                                        <i class="fas fa-sign-out-alt"></i> Log Out
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 3. Update page title
+                document.title = `Dashboard | ${user.email.split('@')[0]} - Emerald Exchange`;
             }
-        }
 
-        // 4. RUN CHECK WHEN PAGE LOADS
-        document.addEventListener('DOMContentLoaded', checkAuth);
+            function showLoginUI() {
+                // Ensure login section shows the button (in case it was hidden)
+                const loginSection = document.querySelector('.login-section');
+                if (loginSection) {
+                    loginSection.innerHTML = `
+                        <div class="container login-container">
+                            <h2>Ready to Invest?</h2>
+                            <p>Sign in to your account to start growing your portfolio</p>
+                            <div class="login-form">
+                                <button onclick="signInWithGoogle()" class="btn btn-individual">
+                                    <i class="fab fa-google"></i> Sign in with Google
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            // Function to set up auth state listener
+            function setupAuthListener() {
+                if (!window.emeraldSupabase) return;
+                
+                // Listen for all auth state changes
+                const { data: { subscription } } = window.emeraldSupabase.auth.onAuthStateChange(
+                    async (event, session) => {
+                        console.log('Supabase Auth event:', event, 'Session present?', !!session);
+                        
+                        if (session) {
+                            // User just logged in or session was refreshed
+                            console.log('User is logged in:', session.user.email);
+                            transformToDashboard(session.user);
+                        } else {
+                            // User just logged out or session expired
+                            console.log('User is logged out or session expired.');
+                            showLoginUI();
+                        }
+                    }
+                );
+                
+                // Return the subscription so you can unsubscribe later if needed
+                return subscription;
+            }
+
+            // Update your page load initialization
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded, setting up auth...');
+                
+                // 1. Set up the listener first
+                setupAuthListener();
+                
+                // 2. Then check the current session
+                checkAuthAndRedirect(); // Your existing function
+            });
+        });
     </script>
 </body>
 </html>
