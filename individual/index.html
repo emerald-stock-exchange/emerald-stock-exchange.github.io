@@ -633,15 +633,17 @@
             });
             async function logout() {
                 if (!window.emeraldSupabase) return;
-                                
+                
+                if (!confirm('Are you sure you want to log out?')) return;
+                
                 try {
                     const { error } = await window.emeraldSupabase.auth.signOut();
                     if (error) throw error;
                     
                     console.log('Logged out from Supabase.');
                     
-                    // CLEAN RELOAD - This always works
-                    window.location.reload(); // Simple and reliable
+                    // EXPLICIT REDIRECT - No ambiguity
+                    window.location.href = 'https://emerald-education-platform.github.io/individual/';
                     
                 } catch (error) {
                     console.error('Logout error:', error);
