@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Emerald Educational Platform</title>
+    <link rel="icon" href="ESElogoIcon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===============================
+           CSS VARIABLES (Matching Cover Page)
+           =============================== */
+        :root {
+            --primary: #10b981;       /* Main brand color (Emerald Green) */
+            --primary-dark: #0da271;
+            --dark: #1f2937;          /* Dark gray for text */
+            --light: #f9fafb;         /* Light gray for backgrounds */
+            --white: #ffffff;
+            --gray: #9ca3af;
+            --max-width: 1200px;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        /* ===============================
+           GLOBAL RESET & BASE STYLES
+           =============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--white);
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ===============================
+           REUSABLE UTILITY CLASSES
+           =============================== */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.85rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .section {
+            padding: 5rem 0;
+        }
+
+        /* ===============================
+           HEADER & NAVIGATION (Fixed Top Bar)
+           =============================== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .logo-img {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+        }
+        .header-container .btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            margin-left: 1rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* ===============================
+           ABOUT HERO SECTION
+           =============================== */
+        .about-hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            padding: 8rem 0 5rem;
+            margin-top: 70px;
+        }
+        .about-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .about-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        .about-hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+        }
+
+        /* ===============================
+           ABOUT CONTENT SECTIONS
+           =============================== */
+        .about-section {
+            padding: 4rem 0;
+        }
+        .about-section:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content-box {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e6f7ff 0%, #d1f0ff 100%);
+            border-left: 4px solid var(--primary);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .content-box ul {
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .content-box li {
+            margin-bottom: 0.8rem;
+            position: relative;
+        }
+        
+        .content-box li:before {
+            content: "✓";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -1.5rem;
+        }
+        
+        .supabase-feature {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #10b981;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+        }
+        
+        .supabase-feature h3 {
+            color: #10b981;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* ===============================
+           MISSION & VISION GRID
+           =============================== */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        
+        .mission-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mission-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===============================
+           FOOTER (Matching Cover Page)
+           =============================== */
+        .site-footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 4rem 0 2rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+        .footer-about p {
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+        }
+        .footer-links h4,
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+        .footer-links ul {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        .footer-contact p {
+            margin-bottom: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* ===============================
+           RESPONSIVE DESIGN
+           =============================== */
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+            .about-hero p {
+                font-size: 1.1rem;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 1.5rem;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .content-box {
+                padding: 2rem;
+            }
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===============================
+         HEADER: Fixed Navigation Bar
+         =============================== -->
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="EmeraldStockExhangeName.png" alt="Emerald Educational Platform Logo" class="logo-img">
+            </a>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#about" style="color: var(--primary);">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="btn">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===============================
+         MAIN CONTENT
+         =============================== -->
+    <main>
+        <!-- ABOUT HERO SECTION -->
+        <section class="about-hero">
+            <div class="container about-hero-content">
+                <h1>About Emerald Stock Exchange</h1>
+                <p>Bridging the gap between classroom learning and real-world economics through immersive simulation and real-value rewards.</p>
+            </div>
+        </section>
+
+        <!-- MISSION & VISION SECTION -->
+        <section class="about-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Our Mission & Vision</h2>
+                    <p>Transforming financial education for the next generation</p>
+                </div>
+                
+                <div class="mission-grid">
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>To equip every student with the financial literacy skills needed to navigate the real world through engaging, hands-on simulation experiences.</p>
+                    </div>
+                    
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>A world where young adults graduate with confidence in managing finances, investing wisely, and understanding economic principles.</p>
+                    </div>
+                    
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Our Promise</h3>
+                        <p>To bridge the economic knowledge gap in traditional education by making financial learning relevant, rewarding, and real.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS SECTION -->
+        <section class="about-section" style="background-color: #f9fafb;">
+            <div class="container">
+                <div class="section-title">
+                    <h2>How Emerald Works</h2>
+                    <p>Turning virtual success into real-world value</p>
+                </div>
+                
+                <div class="content-box">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">The Emerald Coin Ecosystem</h2>
+                    <p>Emerald Coin is a school-district-specific simulation platform designed to make financial education engaging and effective:</p>
+                    
+                    <ul>
+                        <li><strong>Virtual Stock & Crypto Exchange:</strong> Students can buy and trade in a risk-free environment that mimics real markets</li>
+                        <li><strong>Care Coin Rewards:</strong> Virtual gains convert to Care Coins—a real-value reward system used by participating schools</li>
+                        <li><strong>Curriculum Integration:</strong> Seamlessly complements courses like Microeconomics and Macroeconomics</li>
+                        <li><strong>School District Specific:</strong> Tailored to each district's needs and existing reward systems</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <p><strong>Key Innovation:</strong> Unlike other simulators, Emerald ties student success to tangible outcomes, keeping learners motivated and truly invested in their financial education journey.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUPABASE TECHNOLOGY SECTION -->
+        <section class="about-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Our Technology Foundation</h2>
+                    <p>Powered by Supabase for security, scalability, and performance</p>
+                </div>
+                
+                <div class="content-box">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Built on Supabase</h2>
+                    <p>Emerald Stock Exchange leverages <strong>Supabase</strong>, the open-source Firebase alternative, to deliver a secure, scalable, and seamless experience for schools and students.</p>
+                    
+                    <div class="supabase-feature">
+                        <h3>Why Supabase?</h3>
+                        <p>We chose Supabase because it provides enterprise-grade features with the simplicity needed for educational environments:</p>
+                        
+                        <ul>
+                            <li><strong>Real-time Database:</strong> Instant updates to student portfolios and market data</li>
+                            <li><strong>Robust Authentication:</strong> Secure login and role-based access for students, teachers, and administrators</li>
+                            <li><strong>Automatic Scaling:</strong> Handles growth from single classrooms to entire districts seamlessly</li>
+                            <li><strong>Enhanced Security:</strong> Protects sensitive student data with enterprise-level security features</li>
+                            <li><strong>Cost-Effective:</strong> Allows us to keep the platform free for schools while maintaining high performance</li>
+                        </ul>
+                    </div>
+                    
+                    <p>With Supabase handling the backend complexity, we can focus on what matters most: creating an exceptional educational experience that prepares students for financial success.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE EMERALD SECTION -->
+        <section class="about-section" style="background-color: #f9fafb;">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Why Choose Emerald?</h2>
+                    <p>The complete solution for modern financial education</p>
+                </div>
+                
+                <div class="content-box">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-graduation-cap" style="margin-right: 10px;"></i> Educational Excellence</h3>
+                            <p>Aligned with economic curriculum standards and designed by educators for maximum learning impact.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-shield-alt" style="margin-right: 10px;"></i> Safe & Secure</h3>
+                            <p>Student data protection is our priority, with enterprise-grade security built into every layer.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-rocket" style="margin-right: 10px;"></i> Future-Ready</h3>
+                            <p>Prepares students for the evolving worlds of finance, cryptocurrency, and digital economies.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-school" style="margin-right: 10px;"></i> School-Friendly</h3>
+                            <p>Easy integration with existing systems and controlled costs for school districts.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="highlight-box" style="margin-top: 2rem;">
+                        <p><strong>Join the Movement:</strong> We're more than a simulation platform—we're building a community of financially literate graduates ready to thrive in the real world.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===============================
+         FOOTER: Matching Cover Page
+         =============================== -->
+    <footer class="site-footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Emerald Educational Platform</div>
+                    <p>Encouraging the next generation of investors with accessibility, simplicity, and innovation at our core.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-user"></i> Alexander Xu, Founder</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Street Name</p>
+                    <p><i class="fas fa-envelope"></i> info@emeraldstockexchange.com</p>
+                    <p><i class="fas fa-phone"></i> (000) 000-0000</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Emerald Stock Exchange. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.getElementById('menuBtn');
+            
+            if (!navLinks.contains(event.target) && !menuBtn.contains(event.target) && window.innerWidth <= 768) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Update active nav link based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            navLinks.forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (linkPage === currentPage || (currentPage === '' && linkPage === 'index.html')) {
+                    link.style.color = 'var(--primary)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
